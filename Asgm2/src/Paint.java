@@ -67,6 +67,9 @@ public class Paint {
         //show Swing paint result
         frame.setVisible(true);
 
+        //close frame on exit
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
 
     }
 }
