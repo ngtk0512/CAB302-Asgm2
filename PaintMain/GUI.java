@@ -1,5 +1,8 @@
 package PaintMain;
 
+import VEC.VECLoadFile;
+import exception.VECFormatException;
+
 import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -7,6 +10,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Gui handle class for the application
@@ -14,8 +19,8 @@ import java.io.File;
 
 public class GUI extends JFrame implements Runnable,ActionListener {
 
-    public static final int WIDTH = 800;
-    public static final int HEIGHT = 800;
+    public static final int WIDTH = 500;
+    public static final int HEIGHT = 700;
 
     JButton clearBtn, blackBtn, redBtn, blueBtn;
     DrawBoard drawBoard;
@@ -32,6 +37,7 @@ public class GUI extends JFrame implements Runnable,ActionListener {
      */
     public void setupGUI(){
         setSize(WIDTH,HEIGHT);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -112,8 +118,8 @@ public class GUI extends JFrame implements Runnable,ActionListener {
         int returnVal = fc.showOpenDialog(this);
         if(returnVal==JFileChooser.APPROVE_OPTION) {
             File vec = fc.getSelectedFile();
-            String filename = fc.getSelectedFile().getAbsolutePath();
-            return filename;
+            String filepath = fc.getSelectedFile().getAbsolutePath();
+            return filepath;
         } else if(returnVal==JFileChooser.CANCEL_OPTION) {
         }
         return "";
@@ -122,11 +128,26 @@ public class GUI extends JFrame implements Runnable,ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JMenuItem item = (JMenuItem) e.getSource();
-
-        if(item == itemOpen ){
+        if(item == itemOpen || item == itemSave ){
             String filePath = getFilePath();
-            if (filePath == "") {return;}
+            if (filePath == "") return;
 
+            if (item == itemOpen){
+                Backend be = new Backend();
+                try{
+                    ArrayList<ArrayList<String>> commands = be.loadCommands(filePath);
+                    drawBoard.clear();
+                    drawBoard.draw(commands);
+                }catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (VECFormatException e1) {
+                    e1.printStackTrace();
+                } {
+
+                }
+
+
+            }
         }
     }
 

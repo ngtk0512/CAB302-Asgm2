@@ -1,10 +1,12 @@
 package PaintMain;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
 
 
 public class DrawBoard extends JPanel{
@@ -71,5 +73,26 @@ public class DrawBoard extends JPanel{
         public void pencolorChange(Color color){
             graphic2d.setPaint(color);
         }
+
+        public void draw(ArrayList<ArrayList<String>> c){
+
+            for(int i = 0 ; i < c.size(); i++){
+                if((c.get(i).get(0).equals("LINE"))){
+                    pastX = stringToPixel(c.get(i).get(1));
+                    pastY = stringToPixel(c.get(i).get(2));
+                    currentX = stringToPixel(c.get(i).get(3));
+                    currentY = stringToPixel(c.get(i).get(4));
+                    graphic2d.drawLine(pastX, pastY, currentX, currentY);
+                    repaint();
+                }
+            }
+        }
+
+        public int stringToPixel(String s){
+            return (int) (Float.parseFloat((s))*500);
+        }
+
+
+
 }
 
