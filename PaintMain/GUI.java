@@ -1,11 +1,18 @@
-package Asgm2.PaintMain;
+package PaintMain;
 
 import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
-public class GUI extends JFrame implements Runnable {
+/**
+ * Gui handle class for the application
+ */
+
+public class GUI extends JFrame implements Runnable,ActionListener {
 
     public static final int WIDTH = 800;
     public static final int HEIGHT = 800;
@@ -14,6 +21,8 @@ public class GUI extends JFrame implements Runnable {
     DrawBoard drawBoard;
     JColorChooser colorPallete;
     JMenuBar menuBar;
+    JMenuItem itemOpen,itemSave, itemExit;
+
     Container content = this.getContentPane();
 
     public GUI(){}
@@ -43,11 +52,10 @@ public class GUI extends JFrame implements Runnable {
     public void run() {setupGUI(); }
 
     /**
-     * Set up the display of Drawboard
+     * Set up the display of drawboard
      */
     public void setDrawBoard(){
         drawBoard = new DrawBoard();
-
     }
 
     /**
@@ -75,9 +83,10 @@ public class GUI extends JFrame implements Runnable {
         JMenu fileMenu = new JMenu("File");
         JMenu editMenu = new JMenu("Edit");
 
-        JMenuItem itemOpen = new JMenuItem("Open File ...");
-        JMenuItem itemSave = new JMenuItem("Save As");
-        JMenuItem itemExit = new JMenuItem("Exit");
+        itemOpen = new JMenuItem("Open File ...");
+        itemSave = new JMenuItem("Save As");
+        itemExit = new JMenuItem("Exit");
+
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
@@ -87,14 +96,19 @@ public class GUI extends JFrame implements Runnable {
         fileMenu.addSeparator();
         fileMenu.add(itemExit);
 
+        itemOpen.addActionListener(this) ;
+
+
     }
 
     /**
-     * Get the .vec file path
+     * Get the .VEC file path
      * @return
      */
     public String getFilePath(){
         final JFileChooser fc = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("VEC file","vec");
+        fc.setFileFilter(filter);
         int returnVal = fc.showOpenDialog(this);
         if(returnVal==JFileChooser.APPROVE_OPTION) {
             File vec = fc.getSelectedFile();
@@ -104,6 +118,19 @@ public class GUI extends JFrame implements Runnable {
         }
         return "";
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JMenuItem item = (JMenuItem) e.getSource();
+
+        if(item == itemOpen ){
+            String filePath = getFilePath();
+            if (filePath == "") {return;}
+
+        }
+    }
+
+
 
 }
 

@@ -1,4 +1,4 @@
-package Asgm2.PaintMain;
+package PaintMain;
 
 import javax.swing.*;
 

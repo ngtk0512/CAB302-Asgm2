@@ -1,4 +1,4 @@
-package Asgm2.PaintMain;
+package PaintMain;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +16,6 @@ public class DrawBoard extends JPanel{
     int currentX, currentY, pastX, pastY ;
 
     public DrawBoard() {
-        setDoubleBuffered(false);
         setSize(500,500);
         addMouseListener(new MouseAdapter() {
             @Override
@@ -68,20 +67,6 @@ public class DrawBoard extends JPanel{
             graphic2d.setPaint(Color.black);
             repaint();
         }
-
-        public void black(){
-            //apply black color on graphic2d context
-            graphic2d.setPaint(Color.BLACK);
-        }
-        public void red(){
-            //apply black color on graphic2d context
-            graphic2d.setPaint(Color.red);
-        }
-        public void blue(){
-            //apply black color on graphic2d context
-            graphic2d.setPaint(Color.blue);
-        }
-
 
         public void pencolorChange(Color color){
             graphic2d.setPaint(color);
