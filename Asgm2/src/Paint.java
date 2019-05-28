@@ -1,6 +1,8 @@
 package Asgm2.src;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +10,9 @@ import java.awt.event.ActionListener;
 public class Paint {
     JButton clearBtn, blackBtn, redBtn, blueBtn;
     DrawBoard drawBoard;
+    ColorPallete colorPallete;
+    MenuBar menuBar;
+
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -23,24 +28,35 @@ public class Paint {
         }
     };
 
+
     public static void main(String[] args) {
         new Paint().display();
-
     }
 
     public void display(){
         //create main frame
         JFrame frame = new JFrame("Paint");
+        frame.setSize(800,800);
+        //close frame on exit
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+
         Container content = frame.getContentPane();
 
         //set layout on contain pane
         content.setLayout(new BorderLayout());
 
-        //create draw board
+        //create draw board and add to content pane
         drawBoard = new DrawBoard();
-
-        //add to content pane
         content.add(drawBoard,BorderLayout.CENTER);
+
+        //create color palette and add to content pane
+        colorPallete = new ColorPallete();
+        content.add(colorPallete,BorderLayout.SOUTH);
+
+        //create menubar
+         menuBar = new MenuBar();
+         content.add(menuBar,BorderLayout.NORTH);
 
         //create controls to apply colors
         JPanel controls = new JPanel();
@@ -61,16 +77,12 @@ public class Paint {
         controls.add(redBtn);
 
         //add to content pane
-        content.add(controls, BorderLayout.NORTH);
-        frame.setSize(600,600);
+//        content.add(controls, BorderLayout.NORTH);
 
-        //show Swing paint result
+        //Display the window
+
         frame.setVisible(true);
-
-        //close frame on exit
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-
     }
 }
+
 
