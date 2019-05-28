@@ -1,4 +1,4 @@
-package Asgm2.src;
+package Asgm2.PaintMain;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,18 +6,21 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
-public class DrawBoard  extends JComponent{
-    private Image image;
 
-    private Graphics2D graphic2d;
+public class DrawBoard extends JPanel{
+    Image image;
 
-    private int currentX, currentY, pastX, pastY ;
+    Graphics2D graphic2d;
+
+
+    int currentX, currentY, pastX, pastY ;
 
     public DrawBoard() {
         setDoubleBuffered(false);
+        setSize(500,500);
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed (MouseEvent e) {
                 //save coordinate x,y when press mouse
                 pastX = e.getX();
                 pastY = e.getY();
@@ -65,6 +68,7 @@ public class DrawBoard  extends JComponent{
             graphic2d.setPaint(Color.black);
             repaint();
         }
+
         public void black(){
             //apply black color on graphic2d context
             graphic2d.setPaint(Color.BLACK);
@@ -77,15 +81,10 @@ public class DrawBoard  extends JComponent{
             //apply black color on graphic2d context
             graphic2d.setPaint(Color.blue);
         }
-        public void green(){
-            //apply black color on graphic2d context
-            graphic2d.setPaint(Color.green);
-        }
-        public void cyan(){
-            //apply cian color on graphic2d context
-            graphic2d.setPaint(Color.cyan);
-        }
 
+
+        public void pencolorChange(Color color){
+            graphic2d.setPaint(color);
+        }
 }
-        //https://www.youtube.com/watch?v=OOb1eil4PCo
 
