@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 public class GUI extends JFrame implements Runnable,ActionListener {
 
-    public static final int WIDTH = 800;
-    public static final int HEIGHT = 800;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 800;
 
     JButton clearBtn, blackBtn, redBtn, blueBtn;
     DrawBoard drawBoard;

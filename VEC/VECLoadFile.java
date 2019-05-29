@@ -1,5 +1,7 @@
 package VEC;
 
+import exception.VECFormatException;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ public class VECLoadFile extends VECLoad {
      *
      * @param filePath
      */
-    public VECLoadFile(String filePath) throws FileNotFoundException {
+    public VECLoadFile(String filePath) throws FileNotFoundException,VECFormatException {
         super(filePath);
     }
 
@@ -48,7 +50,7 @@ public class VECLoadFile extends VECLoad {
 //        return commands;
 //    }
 
-    public ArrayList<ArrayList<String>> loadFile() throws IOException {
+    public ArrayList<ArrayList<String>> loadFile() throws IOException, VECFormatException {
         ArrayList<ArrayList<String>>  commands = new ArrayList<ArrayList<String>> ();
         String line = br.readLine();
 
@@ -76,24 +78,33 @@ public class VECLoadFile extends VECLoad {
      * @return
      */
     @Override
-    protected boolean validContent(String line) {
-        String[] elements =(String[]) line.split(" ");
-        if (elements.length ==2 && isCommandString(elements[0]) && isHexColor(elements[1])){
-            return true ;
-        }else if (elements.length == 3 && isCommandString(elements[0])
+    protected boolean validContent(String line) throws VECFormatException {
+        String[] elements = line.split(" ");
+
+
+        for (String element : elements){
+            System.out.println(element);
+            if (!isHexColor(element) && !isCommandString(element) && !isDouble(element) ){
+                throw new VECFormatException("Invalid file command");
+            }
+        }
+        if (elements.length == 2 && isCommandString(elements[0]) && isHexColor(elements[1])) {
+            return true;
+        } else if (elements.length == 3 && isCommandString(elements[0])
                 && isDouble(elements[1]) && isDouble(elements[2])) {
             return true;
         } else if (elements.length > 3 && isOdd(elements.length)
                 && isCommandString(elements[0])) {
-            for (int i = 1; i < elements.length; i++){
-                if (!isDouble(elements[i])){
+            for (int i = 1; i < elements.length; i++) {
+                if (!isDouble(elements[i])) {
                     return false;
                 } else
-                    return true ;
+                    return true;
             }
         }
+
         return false;
-    }
+        }
 
 
 }
