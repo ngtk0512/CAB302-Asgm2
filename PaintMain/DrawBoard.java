@@ -14,11 +14,9 @@ public class DrawBoard extends JPanel{
 
     Graphics2D graphic2d;
 
-
     int currentX, currentY, pastX, pastY ;
 
     public DrawBoard() {
-        setSize(500,500);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed (MouseEvent e) {
@@ -48,6 +46,7 @@ public class DrawBoard extends JPanel{
     }
 
         protected void paintComponent (Graphics graphic) {
+            super.paintComponent(graphic);
             if (image == null){
                 //create image if image = null
                 image = createImage(getWidth(),getHeight());
@@ -74,25 +73,41 @@ public class DrawBoard extends JPanel{
             graphic2d.setPaint(color);
         }
 
-        public void draw(ArrayList<ArrayList<String>> c){
 
-            for(int i = 0 ; i < c.size(); i++){
-                if((c.get(i).get(0).equals("LINE"))){
-                    pastX = stringToPixel(c.get(i).get(1));
-                    pastY = stringToPixel(c.get(i).get(2));
-                    currentX = stringToPixel(c.get(i).get(3));
-                    currentY = stringToPixel(c.get(i).get(4));
-                    graphic2d.drawLine(pastX, pastY, currentX, currentY);
-                    repaint();
+        public void drawLine(ArrayList<String> command){
+            System.out.println(command);
+            pastX = stringToPixel(command.get(1));
+            pastY = stringToPixel(command.get(2));
+            currentX = stringToPixel(command.get(3));
+            currentY = stringToPixel(command.get(4));
+            graphic2d.drawLine(pastX, pastY, currentX, currentY);
+            repaint();
+        }
+
+        public void handlingCommands(ArrayList<ArrayList<String>> commands){
+
+            for (ArrayList<String> command : commands ){
+                if (command.get(0).equals("PLOT")){
+
+                } else if (command.get(0).equals("LINE")){
+                    drawLine(command);
+                } else if (command.get(0).equals("PEN")){
+
+                } else if (command.get(0).equals("COLOR")){
+
+                } else if (command.get(0).equals("RECTANGLE")){
+
+                } else if (command.get(0).equals("ELLIPSE")){
+
+                } else if (command.get(0).equals("POLYGON")){
+
                 }
             }
         }
 
         public int stringToPixel(String s){
-            return (int) (Float.parseFloat((s))*500);
+            return (int) (Float.parseFloat((s))*getHeight());
         }
-
-
 
 }
 

@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 public class GUI extends JFrame implements Runnable,ActionListener {
 
-    public static final int WIDTH = 500;
-    public static final int HEIGHT = 700;
+    public static final int WIDTH = 800;
+    public static final int HEIGHT = 800;
 
     JButton clearBtn, blackBtn, redBtn, blueBtn;
     DrawBoard drawBoard;
@@ -60,7 +60,7 @@ public class GUI extends JFrame implements Runnable,ActionListener {
     /**
      * Set up the display of drawboard
      */
-    public void setDrawBoard(){
+    public void setDrawBoard() {
         drawBoard = new DrawBoard();
     }
 
@@ -70,6 +70,7 @@ public class GUI extends JFrame implements Runnable,ActionListener {
 
     public void setColorPallete(){
         colorPallete = new JColorChooser();
+        colorPallete.setPreferredSize(new Dimension(100,100));
         // Only display swatches panel
         AbstractColorChooserPanel[] panels =colorPallete.getChooserPanels();
         for (AbstractColorChooserPanel panel : panels){
@@ -137,16 +138,12 @@ public class GUI extends JFrame implements Runnable,ActionListener {
                 try{
                     ArrayList<ArrayList<String>> commands = be.loadCommands(filePath);
                     drawBoard.clear();
-                    drawBoard.draw(commands);
+                    drawBoard.handlingCommands(commands);
                 }catch (IOException e1) {
                     e1.printStackTrace();
                 } catch (VECFormatException e1) {
                     e1.printStackTrace();
-                } {
-
                 }
-
-
             }
         }
     }
