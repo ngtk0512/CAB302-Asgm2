@@ -69,10 +69,16 @@ public class DrawBoard extends JPanel{
             repaint();
         }
 
-        public void pencolorChange(Color color){
-            graphic2d.setPaint(color);
+        public void pencolorChange(ArrayList<String> command){
+            graphic2d.setPaint(Color.decode(command.get(1)));
         }
 
+        public void drawPlot(ArrayList<String> command){
+            currentX = stringToPixel(command.get(1));
+            currentY = stringToPixel(command.get(2));
+            graphic2d.fillRect(currentX,currentY,1,1);
+            repaint();
+        }
 
         public void drawLine(ArrayList<String> command){
             pastX = stringToPixel(command.get(1));
@@ -82,34 +88,45 @@ public class DrawBoard extends JPanel{
             graphic2d.drawLine(pastX, pastY, currentX, currentY);
             repaint();
         }
-        public void drawPlot(ArrayList<String> command){}
+
+        public void drawRectangle(ArrayList<String> command){
+            pastX = stringToPixel(command.get(1));
+            pastY = stringToPixel(command.get(2));
+            currentX = stringToPixel(command.get(2));
+            currentY = stringToPixel(command.get(2));
+            System.out.println(pastX);
+            graphic2d.drawLine(pastX, pastY, currentX, currentY);
+
+            repaint();
+        }
+
 
         public void handlingCommands(ArrayList<ArrayList<String>> commands){
 
             for (ArrayList<String> command : commands ){
                 if (command.get(0).equals("PLOT")){
-
+                    drawPlot(command);
                 } else if (command.get(0).equals("LINE")) {
                     drawLine(command);
-//                } else if (command.get(0).equals("PEN")){
-//
-//                } else if (command.get(0).equals("COLOR")){
-//
-//                } else if (command.get(0).equals("RECTANGLE")){
-//
+                }  else if (command.get(0).equals("RECTANGLE")){
+                    drawRectangle(command);
 //                } else if (command.get(0).equals("ELLIPSE")){
-//
+
 //                } else if (command.get(0).equals("POLYGON")){
-//
+//                } else if (command.get(0).equals("PEN")){
+//                    pencolorChange(command);
+////                } else if (command.get(0).equals("FILL")){
+////
 //                }
                 }
-
             }
         }
 
         public int stringToPixel(String s){
             return (int) (Float.parseFloat((s))*getHeight());
         }
+
+
 
 }
 

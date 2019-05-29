@@ -84,6 +84,7 @@ public class VECLoadFile extends VECLoad {
 
         for (String element : elements){
             System.out.println(element);
+
             if (!isHexColor(element) && !isCommandString(element) && !isDouble(element) ){
                 throw new VECFormatException("Invalid file command");
             }
