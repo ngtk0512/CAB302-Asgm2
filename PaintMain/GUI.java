@@ -26,7 +26,10 @@ public class GUI extends JFrame implements Runnable,ActionListener {
     DrawBoard drawBoard;
     JColorChooser colorPallete;
     JMenuBar menuBar;
+    JToolBar toolBar;
     JMenuItem itemOpen,itemSave, itemExit;
+
+    JButton plotButon,lineButton,penButton,fillButton,rectangleButton;
 
     Container content = this.getContentPane();
 
@@ -37,7 +40,7 @@ public class GUI extends JFrame implements Runnable,ActionListener {
      */
     public void setupGUI(){
         setSize(WIDTH,HEIGHT);
-
+        setTitle("My Paint");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -105,6 +108,13 @@ public class GUI extends JFrame implements Runnable,ActionListener {
 
         itemOpen.addActionListener(this) ;
 
+
+    }
+
+    public void setToolBar(){
+        toolBar = new JToolBar();
+
+        plotButon = new JButton(new ImageIcon())
 
     }
 

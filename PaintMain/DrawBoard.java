@@ -2,6 +2,8 @@ package PaintMain;
 
 
 import javax.swing.*;
+import javax.swing.undo.UndoableEdit;
+import javax.swing.undo.UndoableEditSupport;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -9,7 +11,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 
 
-public class DrawBoard extends JPanel{
+public class DrawBoard extends JPanel {
     Image image;
 
     Graphics2D graphic2d;
@@ -45,8 +47,9 @@ public class DrawBoard extends JPanel{
         });
     }
 
-        protected void paintComponent (Graphics graphic) {
-            super.paintComponent(graphic);
+        protected void paintComponent (Graphics currentgraphic) {
+            super.paintComponent(currentgraphic);
+
             if (image == null){
                 //create image if image = null
                 image = createImage(getWidth(),getHeight());
@@ -57,7 +60,7 @@ public class DrawBoard extends JPanel{
                 //clear draw area
                 clear();
             }
-            graphic.drawImage(image,0,0,null);
+            currentgraphic.drawImage(image,0,0,null);
         }
 
 
@@ -89,38 +92,42 @@ public class DrawBoard extends JPanel{
             repaint();
         }
 
-        public void drawRectangle(ArrayList<String> command){
-            pastX = stringToPixel(command.get(1));
-            pastY = stringToPixel(command.get(2));
-            currentX = stringToPixel(command.get(2));
-            currentY = stringToPixel(command.get(2));
-            System.out.println(pastX);
-            graphic2d.drawLine(pastX, pastY, currentX, currentY);
 
-            repaint();
+        public void drawRectangle(ArrayList<String> command){
+        pastX = stringToPixel(command.get(1));
+        pastY = stringToPixel(command.get(2));
+        currentX = stringToPixel(command.get(3));
+        currentY = stringToPixel(command.get(4));
+        graphic2d.drawLine(pastX, pastY, currentX, pastY);
+        graphic2d.drawLine(currentX, pastY, currentX, currentY);
+        graphic2d.drawLine(currentX, currentY, pastX, currentY);
+        graphic2d.drawLine(pastX, currentY, pastX, pastY);
+        repaint();
         }
 
+        public void drawEllipse(ArrayList<String> command){
 
-        public void handlingCommands(ArrayList<ArrayList<String>> commands){
+        }
+    public void handlingCommands(ArrayList<ArrayList<String>> commands){
 
-            for (ArrayList<String> command : commands ){
-                if (command.get(0).equals("PLOT")){
-                    drawPlot(command);
-                } else if (command.get(0).equals("LINE")) {
-                    drawLine(command);
-                }  else if (command.get(0).equals("RECTANGLE")){
-                    drawRectangle(command);
+        for (ArrayList<String> command : commands ){
+            if (command.get(0).equals("PLOT")){
+                drawPlot(command);
+            } else if (command.get(0).equals("LINE")) {
+                drawLine(command);
+            }  else if (command.get(0).equals("RECTANGLE")){
+                drawRectangle(command);
 //                } else if (command.get(0).equals("ELLIPSE")){
 
 //                } else if (command.get(0).equals("POLYGON")){
-//                } else if (command.get(0).equals("PEN")){
-//                    pencolorChange(command);
+            } else if (command.get(0).equals("PEN")){
+                pencolorChange(command);
 ////                } else if (command.get(0).equals("FILL")){
 ////
 //                }
-                }
             }
         }
+    }
 
         public int stringToPixel(String s){
             return (int) (Float.parseFloat((s))*getHeight());
