@@ -1,6 +1,7 @@
 package PaintMain;
 
 import VEC.VECLoadFile;
+import resource.*;
 import exception.VECFormatException;
 
 import javax.swing.*;
@@ -51,6 +52,7 @@ public class GUI extends JFrame implements Runnable,ActionListener {
         content.add(menuBar,BorderLayout.NORTH);
         content.add(drawBoard,BorderLayout.CENTER);
         content.add(colorPallete,BorderLayout.SOUTH);
+        content.add(toolBar,BorderLayout.WEST);
 
 
         repaint();
@@ -113,8 +115,13 @@ public class GUI extends JFrame implements Runnable,ActionListener {
 
     public void setToolBar(){
         toolBar = new JToolBar();
+        plotButon = new JButton("Plot",new ImageIcon("plot.jpg"));
 
-        plotButon = new JButton(new ImageIcon())
+
+
+        toolBar.add(plotButon);
+
+
 
     }
 
