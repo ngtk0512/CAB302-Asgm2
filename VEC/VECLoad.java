@@ -1,5 +1,7 @@
 package VEC;
 
+import exception.VECFormatException;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -22,7 +24,7 @@ public abstract class VECLoad {
      * @param line a given string
      * @return return true if the line is in correct format, else return false
      */
-    protected abstract boolean validContent(String line);
+    protected abstract boolean validContent(String line) throws VECFormatException;
 
     /**
      * Checking whether a given string can be converted to a double.
