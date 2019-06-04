@@ -1,11 +1,13 @@
 package PaintMain;
 
-import VEC.VECLoadFile;
-import resource.*;
+
 import exception.VECFormatException;
+
 
 import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,36 +20,34 @@ import java.util.ArrayList;
  * Gui handle class for the application
  */
 
-public class GUI extends JFrame implements Runnable,ActionListener {
+public class GUI extends JFrame implements Runnable {
+    final int WIDTH = 750;
+    final int HEIGHT = 800;
 
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 800;
+    private JButton clearBtn, undoBtn,plotBtn, lineBtn,rectBtn ;
+    private DrawBoard drawBoard;
+    private JColorChooser colorPallete;
+    private JMenuBar menuBar;
+    private JToolBar toolBar;
+    private JMenuItem itemOpen,itemSave, itemExit;
 
-    JButton clearBtn, blackBtn, redBtn, blueBtn;
-    DrawBoard drawBoard;
-    JColorChooser colorPallete;
-    JMenuBar menuBar;
-    JToolBar toolBar;
-    JMenuItem itemOpen,itemSave, itemExit;
 
-    JButton plotButon,lineButton,penButton,fillButton,rectangleButton;
-
-    Container content = this.getContentPane();
-
-    public GUI(){}
+    private Container content = this.getContentPane();
 
     /**
-     * Create Gui
+     * Initial Gui constructor
      */
-    public void setupGUI(){
+    public GUI(){
         setSize(WIDTH,HEIGHT);
         setTitle("My Paint");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        setDrawBoard();
+        drawBoard = new DrawBoard();
+
         setColorPallete();
         setMenuBar();
+        setToolBar();
 
         content.add(menuBar,BorderLayout.NORTH);
         content.add(drawBoard,BorderLayout.CENTER);
@@ -60,13 +60,14 @@ public class GUI extends JFrame implements Runnable,ActionListener {
     }
 
 
-    public void run() {setupGUI(); }
+    public void run() {}
 
     /**
      * Set up the display of drawboard
      */
     public void setDrawBoard() {
-        drawBoard = new DrawBoard();
+
+
     }
 
     /**
@@ -85,6 +86,8 @@ public class GUI extends JFrame implements Runnable,ActionListener {
         }
         // Disable the preview panel
         colorPallete.setPreviewPanel(new JPanel());
+
+        colorPallete.getSelectionModel().addChangeListener(new ColorSelection());
     }
 
     /**
@@ -108,21 +111,46 @@ public class GUI extends JFrame implements Runnable,ActionListener {
         fileMenu.addSeparator();
         fileMenu.add(itemExit);
 
-        itemOpen.addActionListener(this) ;
+        dropMenuHandler dh = new dropMenuHandler();
+
+        itemOpen.addActionListener(dh) ;
 
 
     }
 
+    /**
+     * Set up toolbar
+     */
     public void setToolBar(){
         toolBar = new JToolBar();
-        plotButon = new JButton("Plot",new ImageIcon("plot.jpg"));
+        toolBar.setFloatable(false);
+        toolBar.setPreferredSize(new Dimension(100,getHeight()));
+        toolBar.setLayout(new BoxLayout(toolBar,BoxLayout.PAGE_AXIS));
+
+        clearBtn = new JButton("Clear All");
+        undoBtn = new JButton("Undo");
+        plotBtn = new JButton("Plot");
+        lineBtn = new JButton("Line");
+        rectBtn = new JButton("Rectangle");
+
+        ButtonHandler bh = new ButtonHandler();
+
+        addButtontoToolbar(toolBar,clearBtn,bh);
+        addButtontoToolbar(toolBar,undoBtn,bh);
+        addButtontoToolbar(toolBar,plotBtn,bh);
+        addButtontoToolbar(toolBar,lineBtn,bh);
+        addButtontoToolbar(toolBar,rectBtn,bh);
 
 
 
-        toolBar.add(plotButon);
-
-
-
+    }
+    /**
+     * Add button to toolbar with an ButtonListener for each
+     */
+    private void addButtontoToolbar(final JToolBar toolBar, JButton button,
+                                    final ActionListener actionListener){
+        button.addActionListener(actionListener);
+        toolBar.add(button);
     }
 
     /**
@@ -143,25 +171,56 @@ public class GUI extends JFrame implements Runnable,ActionListener {
         return "";
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JMenuItem item = (JMenuItem) e.getSource();
-        if(item == itemOpen || item == itemSave ){
-            String filePath = getFilePath();
-            if (filePath == "") return;
+    private class dropMenuHandler implements ActionListener{
 
-            if (item == itemOpen){
-                Backend be = new Backend();
-                try{
-                    ArrayList<ArrayList<String>> commands = be.loadCommands(filePath);
-                    drawBoard.clear();
-                    drawBoard.handlingCommands(commands);
-                }catch (IOException e1) {
-                    e1.printStackTrace();
-                } catch (VECFormatException e1) {
-                    e1.printStackTrace();
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JMenuItem item = (JMenuItem) e.getSource();
+            if(item == itemOpen || item == itemSave ){
+                String filePath = getFilePath();
+                if (filePath == "") return;
+
+                if (item == itemOpen){
+                    Backend be = new Backend();
+                    try{
+                        ArrayList<ArrayList<String>> commands = be.loadCommands(filePath);
+                        drawBoard.clearAll();
+                        drawBoard.handlingCommands(commands);
+                    }catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (VECFormatException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
+        }
+    }
+
+    private class ButtonHandler implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource() == clearBtn){
+                drawBoard.clearAll();
+            }else if (e.getSource() == undoBtn){
+                drawBoard.undo();
+            }else if (e.getSource() == plotBtn){
+                drawBoard.setCurrentShapeType(0);
+            }else if(e.getSource()== lineBtn){
+                drawBoard.setCurrentShapeType(1);
+            }else if(e.getSource()== rectBtn){
+                drawBoard.setCurrentShapeType(2);
+            }
+        }
+    }
+
+    private class ColorSelection implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            Color color = colorPallete.getColor();
+            drawBoard.pencolorChange(color);
+            drawBoard.getcurrentPenColor();
         }
     }
 

@@ -24,31 +24,6 @@ public class VECLoadFile extends VECLoad {
     /**
      * Reading the given .VEC file and returning an array of items
      */
-//    public ArrayList<Command> loadFile() throws IOException, VECFormatException {
-//        ArrayList<Command> commands = new ArrayList<>();
-//        for(String line = br.readLine();line != null; line=br.readLine()){
-//            if(!validContent(line)){
-//                throw new VECFormatException("Incorrect .VEC file");
-//            }
-//
-//            String[] elements = line.split(" ");
-//            String name = elements[0];
-//
-//            if (elements.length == 2){
-//                String color = elements[1];
-//                commands.add(new Command(name,color));
-//            } else if(elements.length == 3){
-//                double currentX = Double.parseDouble(elements[1]);
-//                double currentY = Double.parseDouble(elements[2]);
-//                commands.add(new Command(name,currentX,currentY));
-//            }
-//
-//        }
-//        br.close();
-//        fr.close();
-//        System.out.println(commands);
-//        return commands;
-//    }
 
     public ArrayList<ArrayList<String>> loadFile() throws IOException, VECFormatException {
         ArrayList<ArrayList<String>>  commands = new ArrayList<ArrayList<String>> ();

@@ -1,113 +1,143 @@
 package PaintMain;
 
 
+import shapes.Line;
+import shapes.Plot;
+import shapes.Rectangle;
+import shapes.VECShape;
+
 import javax.swing.*;
-import javax.swing.undo.UndoableEdit;
-import javax.swing.undo.UndoableEditSupport;
+import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 
 public class DrawBoard extends JPanel {
-    Image image;
+    private Image image,undoTemp;
 
-    Graphics2D graphic2d;
+    private Graphics2D graphic2d;
 
-    int currentX, currentY, pastX, pastY ;
+    int X1, Y1, X2, Y2;
+
+
+    private ArrayList<VECShape> shapes;
+    public VECShape currentShape;
+    private int currentShapeType ;
+
+    public Color currentpenColor = Color.BLACK;
+    public Color currenfillColor= null;
+
+    private boolean filledShape = false;
+
+
+    private JLabel statusLabel;
+
 
     public DrawBoard() {
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed (MouseEvent e) {
-                //save coordinate x,y when press mouse
-                pastX = e.getX();
-                pastY = e.getY();
-            }
-        });
+        shapes = new ArrayList<VECShape>();
 
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                currentX = e.getX();
-                currentY = e.getY();
+        setBackground(Color.WHITE);
+        setPreferredSize(new Dimension(500,500));
 
-                if (graphic2d != null) {
-                    //draw a line if graphic not null
-                    graphic2d.drawLine(pastX, pastY, currentX, currentY);
-                    //refresh the draw board
-                    repaint();
-                    //store current coordinates x,y as past x,y
-                    pastX = currentX;
-                    pastY = currentY;
-                }
-            }
-        });
+        statusLabel = new JLabel("(0,0)"); //shows the curser value
+        statusLabel.setOpaque(true);
+        add(statusLabel,BorderLayout.SOUTH);
+
+        mouseHandler mouseHandler1 = new mouseHandler();
+        addMouseListener(mouseHandler1);;
+        addMouseMotionListener(mouseHandler1);
+
+
+        currentShape = null;
+        setCurrentShapeType(1);
+
     }
 
-        protected void paintComponent (Graphics currentgraphic) {
-            super.paintComponent(currentgraphic);
+    public void paintComponent (Graphics drawboard) {
+        super.paintComponent(drawboard);
 
-            if (image == null){
-                //create image if image = null
-                image = createImage(getWidth(),getHeight());
-                graphic2d = (Graphics2D) image.getGraphics();
-                //enable antialiasing
-                graphic2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
-                //clear draw area
-                clear();
-            }
-            currentgraphic.drawImage(image,0,0,null);
+        graphic2d = (Graphics2D) drawboard;
+
+        for(int i = 0; i< shapes.size(); i++)
+        {
+            shapes.get(i).draw(graphic2d);
+        }
+        if(currentShape != null)
+        {
+            currentShape.draw(graphic2d);
         }
 
 
-        public void clear(){
-            graphic2d.setPaint(Color.WHITE);
-            //clear board by draw white on it
-            graphic2d.fillRect(0,0,getWidth(),getHeight());
-            graphic2d.setPaint(Color.black);
-            repaint();
-        }
+    }
 
-        public void pencolorChange(ArrayList<String> command){
-            graphic2d.setPaint(Color.decode(command.get(1)));
-        }
-
-        public void drawPlot(ArrayList<String> command){
-            currentX = stringToPixel(command.get(1));
-            currentY = stringToPixel(command.get(2));
-            graphic2d.fillRect(currentX,currentY,1,1);
-            repaint();
-        }
-
-        public void drawLine(ArrayList<String> command){
-            pastX = stringToPixel(command.get(1));
-            pastY = stringToPixel(command.get(2));
-            currentX = stringToPixel(command.get(3));
-            currentY = stringToPixel(command.get(4));
-            graphic2d.drawLine(pastX, pastY, currentX, currentY);
-            repaint();
-        }
+    public void setCurrentShapeType(int type){
+        this.currentShapeType = type;
+    }
 
 
-        public void drawRectangle(ArrayList<String> command){
-        pastX = stringToPixel(command.get(1));
-        pastY = stringToPixel(command.get(2));
-        currentX = stringToPixel(command.get(3));
-        currentY = stringToPixel(command.get(4));
-        graphic2d.drawLine(pastX, pastY, currentX, pastY);
-        graphic2d.drawLine(currentX, pastY, currentX, currentY);
-        graphic2d.drawLine(currentX, currentY, pastX, currentY);
-        graphic2d.drawLine(pastX, currentY, pastX, pastY);
+    public void clearAll(){
+        graphic2d.setPaint(Color.WHITE);
+        //clear board by draw white on it
+        graphic2d.fillRect(0,0,getWidth(),getHeight());
+        graphic2d.setPaint(Color.black);
+        shapes.clear();
         repaint();
+    }
+    public void undo(){
+        if (shapes.size()!= 0){
+            shapes.remove(shapes.size()-1);
         }
+        repaint();
+    }
 
-        public void drawEllipse(ArrayList<String> command){
+    public void pencolorChange(ArrayList<String> command){
+        graphic2d.setPaint(Color.decode(command.get(1)));
+    }
+    public void pencolorChange(Color color){
+        setcurrentPenColor(color);
+    }
 
-        }
+    public void setcurrentPenColor(Color color) {
+        currentpenColor = color;
+        graphic2d.setColor(currentpenColor);
+    }
+
+    public Color getcurrentPenColor(){
+        return currentpenColor;
+    }
+
+    public void drawPlot(ArrayList<String> command){
+        X1 = stringToPixel(command.get(1));
+        Y1 = stringToPixel(command.get(2));
+        graphic2d.fillRect(X1, Y1,1,1);
+        repaint();
+    }
+
+    public void drawLine(ArrayList<String> command){
+        X2 = stringToPixel(command.get(1));
+        Y2 = stringToPixel(command.get(2));
+        X1 = stringToPixel(command.get(3));
+        Y1 = stringToPixel(command.get(4));
+        graphic2d.drawLine(X2, Y2, X1, Y1);
+        repaint();
+    }
+
+
+    public void drawRectangle(ArrayList<String> command){
+    X2 = stringToPixel(command.get(1));
+    Y2 = stringToPixel(command.get(2));
+    X1 = stringToPixel(command.get(3));
+    Y1 = stringToPixel(command.get(4));
+    graphic2d.drawLine(X2, Y2, X1, Y2);
+    graphic2d.drawLine(X1, Y2, X1, Y1);
+    graphic2d.drawLine(X1, Y1, X2, Y1);
+    graphic2d.drawLine(X2, Y1, X2, Y2);
+    repaint();
+    }
+
+
     public void handlingCommands(ArrayList<ArrayList<String>> commands){
 
         for (ArrayList<String> command : commands ){
@@ -129,10 +159,72 @@ public class DrawBoard extends JPanel {
         }
     }
 
-        public int stringToPixel(String s){
-            return (int) (Float.parseFloat((s))*getHeight());
+    public int stringToPixel(String s){
+        return (int) (Float.parseFloat((s))*getHeight());
+    }
+
+
+    private class mouseHandler extends MouseInputAdapter implements MouseListener{
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+            //Identify what shape is being use 0 for PLOT 1 for LINE 2 for TRIANGLE
+            switch (currentShapeType){
+                case 0:
+                    currentShape = new Plot(e.getX(),e.getY(),currentpenColor);
+                    shapes.add(currentShape);
+                    currentShape = null;
+                    repaint();
+                    break;
+
+                case 1:
+                    currentShape = new Line();
+                    currentShape.setX1(e.getX());
+                    currentShape.setY1(e.getY());
+                    break;
+
+                case 2:
+                    currentShape = new Rectangle();
+                    currentShape.setX1(e.getX());
+                    currentShape.setY1(e.getY());
+                    break;
+            }
+
         }
 
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+            if (currentShape != null){
+
+            System.out.println("a");
+
+            currentShape.setX2(e.getX());
+            currentShape.setY2(e.getY());
+
+            shapes.add(currentShape);
+            currentShape = null;
+
+            repaint();
+            } else throw new NullPointerException("Need to choose a shape first");
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+
+            currentShape.setX2(e.getX());
+            currentShape.setY2(e.getY());
+
+            repaint();
+        }
+
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            statusLabel.setText("("+e.getX()+","+ e.getY()+"");
+
+        }
+    }
 
 
 }

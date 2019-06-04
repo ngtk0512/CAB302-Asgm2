@@ -22,7 +22,7 @@ public abstract class VECLoad {
     /**
      * An method for checking whether a content of a given file is correct or not.
      * @param line a given string
-     * @return return true if the line is in correct format, else return false
+     * @return return true if the line is in correct format, else return false+
      */
     protected abstract boolean validContent(String line) throws VECFormatException;
 

@@ -15,21 +15,6 @@ public class Backend {
     public Backend() {
     }
 
-//    CMD .....
-//
-//    CMD == FILL || PEN
-//            param = Colourcode
-//    CMD == RECTANGLE || LINE
-//            param = x_from, y_from, x_to, y_to
-//    CMD == PLOT
-//            param = x, y
-//
-//
-//    array = split(line, " ")
-//if (array[0] == FILL || ){
-//        set colourpen = array[1]
-//    }
-//
 
     /**
      * The method use VECLoadFile class to read a given file. VECLoadFile return an array of commands
@@ -41,6 +26,8 @@ public class Backend {
         ArrayList<ArrayList<String>> commands = vec.loadFile();
         return commands;
     }
+
+
 
 
 
