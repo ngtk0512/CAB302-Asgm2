@@ -38,11 +38,7 @@ public class VECLoadFile extends VECLoad {
         }
         br.close();
         fr.close();
-        for(int i=0; i < commands.size(); i++){
-            for(int j=0; j < commands.get(i).size(); j++){
-//                System.out.println(commands.get(i).get(j));
-            }
-        }
+
         return commands;
     }
 
@@ -53,34 +49,17 @@ public class VECLoadFile extends VECLoad {
      * @return
      */
     @Override
-    protected boolean validContent(String line) throws VECFormatException {
+    protected boolean validContent(String line) throws VECFormatException,RuntimeException {
         String[] elements = line.split(" ");
 
-
         for (String element : elements){
-            System.out.println(element);
 
-            if (!isHexColor(element) && !isCommandString(element) && !isDouble(element) ){
+            if(isHexColor(element) || isCommandString(element) || !isDouble(element)){
+                return true;
+            } else {
                 throw new VECFormatException("Invalid file command");
             }
         }
-        if (elements.length == 2 && isCommandString(elements[0]) && isHexColor(elements[1])) {
-            return true;
-        } else if (elements.length == 3 && isCommandString(elements[0])
-                && isDouble(elements[1]) && isDouble(elements[2])) {
-            return true;
-        } else if (elements.length > 3 && isOdd(elements.length)
-                && isCommandString(elements[0])) {
-            for (int i = 1; i < elements.length; i++) {
-                if (!isDouble(elements[i])) {
-                    return false;
-                } else
-                    return true;
-            }
-        }
-
         return false;
-        }
-
-
+    }
 }

@@ -6,6 +6,7 @@ import shapes.Rectangle;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
+import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -13,17 +14,22 @@ import java.util.ArrayList;
 
 
 public class DrawBoard extends JPanel {
+    final Color Default_pen_color = Color.BLACK;
+    final Color Default_fill_color = null;
+
     private Image image,undoTemp;
     private Graphics2D graphic2d;
-    private int X1, Y1, X2, Y2;
     private ArrayList<VECShape> shapes;
     public VECShape currentShape;
     private int currentShapeType ;
 
-    public Color currentpenColor = Color.BLACK;
-    public Color currenfillColor= null;
+    private int x1,y1,x2,y2;
+    private String tool;
 
-    private boolean filledShape = false;
+    public Color currentpenColor = Default_pen_color;
+    public Color currenfillColor= Default_fill_color;
+
+    private boolean isFilled = false;
 
 
     private JLabel statusLabel;
@@ -47,34 +53,35 @@ public class DrawBoard extends JPanel {
         currentShape = null;
         setCurrentShapeType(1);
 
+
+
+
     }
 
     public void paintComponent (Graphics drawboard) {
         super.paintComponent(drawboard);
         graphic2d = (Graphics2D) drawboard;
+        graphic2d.setColor(Color.BLACK);
 
         for(int i = 0; i< shapes.size(); i++)
         {
             shapes.get(i).draw(graphic2d);
         }
-        if(currentShape != null)
+        if (currentShape != null)
         {
             currentShape.draw(graphic2d);
         }
-
-
     }
 
     public void setCurrentShapeType(int type){
         this.currentShapeType = type;
     }
 
-
     public void clearAll(){
         graphic2d.setPaint(Color.WHITE);
         //clear board by draw white on it
         graphic2d.fillRect(0,0,getWidth(),getHeight());
-        graphic2d.setPaint(Color.black);
+        graphic2d.setColor(Default_pen_color);
         shapes.clear();
         repaint();
     }
@@ -85,67 +92,52 @@ public class DrawBoard extends JPanel {
         repaint();
     }
 
-    public void pencolorChange(ArrayList<String> command){
-        graphic2d.setPaint(Color.decode(command.get(1)));
-    }
 
     public void setcurrentPenColor(Color color) { this.currentpenColor = color; }
-
-    public Color getcurrentPenColor(){
-        return currentpenColor;
-    }
-
+    public Color getcurrentPenColor(){ return currentpenColor; }
     public void setcurrenFillColor(Color color){this.currenfillColor = color;}
-
     public Color getcurrentFillColor(){return this.currenfillColor;}
-
-    public void drawPlot(ArrayList<String> command){
-        X1 = stringToPixel(command.get(1));
-        Y1 = stringToPixel(command.get(2));
-        graphic2d.fillRect(X1, Y1,1,1);
-        repaint();
-    }
-
-    public void drawLine(ArrayList<String> command){
-        X2 = stringToPixel(command.get(1));
-        Y2 = stringToPixel(command.get(2));
-        X1 = stringToPixel(command.get(3));
-        Y1 = stringToPixel(command.get(4));
-        graphic2d.drawLine(X2, Y2, X1, Y1);
-        repaint();
-    }
-
-
-    public void drawRectangle(ArrayList<String> command){
-    X2 = stringToPixel(command.get(1));
-    Y2 = stringToPixel(command.get(2));
-    X1 = stringToPixel(command.get(3));
-    Y1 = stringToPixel(command.get(4));
-    graphic2d.drawLine(X2, Y2, X1, Y2);
-    graphic2d.drawLine(X1, Y2, X1, Y1);
-    graphic2d.drawLine(X1, Y1, X2, Y1);
-    graphic2d.drawLine(X2, Y1, X2, Y2);
-    repaint();
-    }
+    public void setFilled(boolean Filled) {isFilled = Filled;}
+    public boolean getFilled(){return isFilled;}
 
 
     public void handlingCommands(ArrayList<ArrayList<String>> commands){
-
         for (ArrayList<String> command : commands ){
-            if (command.get(0).equals("PLOT")){
-                drawPlot(command);
-            } else if (command.get(0).equals("LINE")) {
-                drawLine(command);
-            }  else if (command.get(0).equals("RECTANGLE")){
-                drawRectangle(command);
-//                } else if (command.get(0).equals("ELLIPSE")){
+            tool =  command.get(0) ;
+            if (command.size() > 3 ){
+                x1 = stringToPixel(command.get(1));
+                y1 = stringToPixel(command.get(2));
+                x2 = stringToPixel(command.get(3));
+                y2 = stringToPixel(command.get(4));
 
-//                } else if (command.get(0).equals("POLYGON")){
-            } else if (command.get(0).equals("PEN")){
-                pencolorChange(command);
-////                } else if (command.get(0).equals("FILL")){
-////
-//                }
+                if (tool.equals("LINE")) {
+                    currentShape = new Line(x1,y1,x2,y2,currentpenColor,currenfillColor,isFilled);
+                } else if (tool.equals("RECTANGLE")){
+                    currentShape = new Rectangle(x1,y1,x2,y2,currentpenColor,currenfillColor,isFilled);
+                } else if (tool.equals("ELLIPSE")) {
+                    currentShape = new Ellipse(x1, y1, x2, y2, currentpenColor, currenfillColor,isFilled);
+                }
+
+                if (currentShape.getfillColor()!=null){
+                    currentShape.setFilled(true);
+                }
+                shapes.add(currentShape);
+
+
+            }else if (tool.equals("PLOT")){
+                x1 = stringToPixel(command.get(1));
+                y1 = stringToPixel(command.get(2));
+                currentShape = new Plot(x1,y1,currentpenColor);
+                shapes.add(currentShape);
+
+            } else if (tool.equals("PEN")){
+                setcurrentPenColor(Color.decode(command.get(1)));
+            } else if (tool.equals("FILL") && command.get(1).matches("OFF")) {
+                setFilled(false);
+                setcurrenFillColor(null);
+            } else if (tool.equals("FILL")) {
+                setFilled(true);
+                setcurrenFillColor(Color.decode(command.get(1)));
             }
         }
     }
@@ -159,24 +151,20 @@ public class DrawBoard extends JPanel {
         @Override
         public void mousePressed(MouseEvent e) {
 
-            //Identify what shape is being use 0 for PLOT 1 for LINE 2 for TRIANGLE
+            //Identify what shape is being use 0 for PLOT 1 for LINE 2 for TRIANGLE 3 for ELLIPSE
             switch (currentShapeType){
 
                 case 0:
                     currentShape = new Plot(e.getX(),e.getY(),currentpenColor);
                     break;
-
                 case 1:
-                    currentShape = new Line(e.getX(),e.getY(),e.getY(),e.getY(),currentpenColor,currenfillColor);
-
-
+                    currentShape = new Line(e.getX(),e.getY(),e.getY(),e.getY(),currentpenColor,currenfillColor, isFilled );
                     break;
-
                 case 2:
-                    currentShape = new Rectangle(e.getX(),e.getY(),e.getY(),e.getY(),currentpenColor,currenfillColor);
+                    currentShape = new Rectangle(e.getX(),e.getY(),e.getY(),e.getY(),currentpenColor,currenfillColor, isFilled);
                     break;
                 case 3:
-                    currentShape =  new Ellipse(e.getX(),e.getY(),e.getY(),e.getY(),currentpenColor,currenfillColor);
+                    currentShape =  new Ellipse(e.getX(),e.getY(),e.getY(),e.getY(),currentpenColor,currenfillColor , isFilled);
             }
 
         }
@@ -212,7 +200,6 @@ public class DrawBoard extends JPanel {
 
         }
     }
-
 
 }
 

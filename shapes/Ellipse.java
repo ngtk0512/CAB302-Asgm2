@@ -5,8 +5,8 @@ import java.awt.*;
 public class Ellipse extends VECShape {
     public Ellipse(){super();}
 
-    public Ellipse(int x1 , int y1 , int x2 , int y2, Color penColor,Color fillColor){
-        super(x1,y1,x2,y2,penColor,fillColor);
+    public Ellipse(int x1 , int y1 , int x2 , int y2, Color penColor,Color fillColor, boolean isFilled){
+        super(x1,y1,x2,y2,penColor,fillColor,isFilled);
     }
     @Override
     public void draw(Graphics2D drawboard) {

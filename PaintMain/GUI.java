@@ -25,6 +25,7 @@ public class GUI extends JFrame implements Runnable {
     final int HEIGHT = 800;
 
     private JButton clearBtn, undoBtn,plotBtn, lineBtn,rectBtn,ellipseBtn ;
+    private JToggleButton filledBtn ;
     private JRadioButton penclrBtn, fillclrBtn;
     private DrawBoard drawBoard;
     private JColorChooser colorPallete;
@@ -135,6 +136,17 @@ public class GUI extends JFrame implements Runnable {
 
         clearBtn = new JButton("Clear All");
         undoBtn = new JButton("Undo");
+        filledBtn = new JToggleButton("Filled");
+        filledBtn.setSelected(false);
+        filledBtn.addActionListener(e -> {
+            JToggleButton tgBtn = (JToggleButton) e.getSource();
+            if (tgBtn.isSelected()){
+                drawBoard.setFilled(true);
+            }else if(!tgBtn.isSelected()) {
+                drawBoard.setFilled(false);
+            }
+        });
+
         plotBtn = new JButton("Plot");
         lineBtn = new JButton("Line");
         rectBtn = new JButton("Rectangle");
@@ -143,10 +155,18 @@ public class GUI extends JFrame implements Runnable {
 
         addButtontoToolbar(toolBar,clearBtn,new toolbarHandler());
         addButtontoToolbar(toolBar,undoBtn,new toolbarHandler());
+
+
+
         addButtontoToolbar(toolBar,plotBtn,new toolbarHandler());
         addButtontoToolbar(toolBar,lineBtn,new toolbarHandler());
         addButtontoToolbar(toolBar,rectBtn,new toolbarHandler());
         addButtontoToolbar(toolBar,ellipseBtn, new toolbarHandler());
+
+        toolBar.addSeparator();
+        toolBar.add(filledBtn);
+
+
 
 
 

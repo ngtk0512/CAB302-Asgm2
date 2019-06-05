@@ -51,8 +51,7 @@ public abstract class VECLoad {
 
     protected boolean isCommandString(String element) {
      return ((element != null)
-             && (!element.equals(""))
-             && (element.matches("^[A-Z]*$")));
+             && (element.matches("^[A-Za-z]*$")));
     }
 
     protected boolean isOdd(int length) {
