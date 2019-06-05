@@ -2,7 +2,9 @@ package PaintMain;
 
 
 import exception.VECFormatException;
-
+/**
+ * A GUI handling class for the application
+ */
 
 import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
@@ -10,14 +12,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Gui handle class for the application
+ * Create Gui for the application
  */
 
 public class GUI extends JFrame implements Runnable {
@@ -57,12 +58,11 @@ public class GUI extends JFrame implements Runnable {
         content.add(colorPallete,BorderLayout.SOUTH);
         content.add(toolBar,BorderLayout.WEST);
 
-//        pack();
         repaint();
         setVisible(true);
     }
 
-
+    @Override
     public void run() {}
 
     /**
@@ -136,6 +136,11 @@ public class GUI extends JFrame implements Runnable {
 
         clearBtn = new JButton("Clear All");
         undoBtn = new JButton("Undo");
+
+        keyPress k= new keyPress();
+        undoBtn.addKeyListener(k);
+
+
         filledBtn = new JToggleButton("Filled");
         filledBtn.setSelected(false);
         filledBtn.addActionListener(e -> {
@@ -165,12 +170,8 @@ public class GUI extends JFrame implements Runnable {
 
         toolBar.addSeparator();
         toolBar.add(filledBtn);
-
-
-
-
-
     }
+
     /**
      * Add button to toolbar with an ButtonListener for each
      */
@@ -182,7 +183,7 @@ public class GUI extends JFrame implements Runnable {
 
     /**
      * Get the .VEC file path
-     * @return
+     * @return the string contain the file path
      */
     public String getFilePath(){
         final JFileChooser fc = new JFileChooser();
@@ -198,6 +199,9 @@ public class GUI extends JFrame implements Runnable {
         return "";
     }
 
+    /**
+     * A listener class for handling the dropdown menu
+     */
     private class dropMenuHandler implements ActionListener{
 
         @Override
@@ -225,6 +229,9 @@ public class GUI extends JFrame implements Runnable {
         }
     }
 
+    /**
+     * A listener class for handling the toolbar
+     */
     private class toolbarHandler implements ActionListener{
 
         @Override
@@ -244,6 +251,9 @@ public class GUI extends JFrame implements Runnable {
         }
     }
 
+    /**
+     * A listener class for handling the color chooser
+     */
     private class ColorSelection implements ChangeListener {
 
         @Override
@@ -255,6 +265,24 @@ public class GUI extends JFrame implements Runnable {
                 Color color = colorPallete.getColor();
                 drawBoard.setcurrenFillColor(color);
             }
+        }
+    }
+    private class keyPress implements KeyListener{
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)){
+                drawBoard.undo();
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
         }
     }
 

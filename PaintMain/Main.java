@@ -3,8 +3,8 @@ package PaintMain;
 import javax.swing.*;
 
 /**
- * Main program
- *
+ * Main program of the application
+ * @author Nguyen Tien Khai - n9913998
  */
 public class Main {
 

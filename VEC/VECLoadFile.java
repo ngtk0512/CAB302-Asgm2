@@ -22,9 +22,12 @@ public class VECLoadFile extends VECLoad {
     }
 
     /**
-     * Reading the given .VEC file and returning an array of items
+     * Reading the given .VEC file and returning an array of items, each line is validate
+     * if it is correct format
+     * @return an array of commands read from the VEC file
+     * @throws IOException throwing exception if there is any error when reading file
+     * @throws VECFormatException throwing exception if the content file is not in correct format for reading item property
      */
-
     public ArrayList<ArrayList<String>> loadFile() throws IOException, VECFormatException {
         ArrayList<ArrayList<String>>  commands = new ArrayList<ArrayList<String>> ();
         String line = br.readLine();
@@ -38,7 +41,6 @@ public class VECLoadFile extends VECLoad {
         }
         br.close();
         fr.close();
-
         return commands;
     }
 

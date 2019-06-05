@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  * Back end of the application
- * -Load vec file
+ * Load vec file
  */
 public class Backend {
 

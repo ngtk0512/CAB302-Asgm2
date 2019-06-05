@@ -8,11 +8,18 @@ import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * An Abstract class for VEC file parsing which have methods to check if the selected file
+ * is in the right format or not
+ */
 public abstract class VECLoad {
     protected FileReader fr ;
     protected BufferedReader br;
+
     /**
-     * Initital for file reading
+     * Initializing for reading file
+     * @param filePath a file path in form of a String
+     * @throws FileNotFoundException if file is not found, throw exception
      */
     public VECLoad(String filePath) throws FileNotFoundException{
         fr = new FileReader(filePath);
@@ -27,9 +34,9 @@ public abstract class VECLoad {
     protected abstract boolean validContent(String line) throws VECFormatException;
 
     /**
-     * Checking whether a given string can be converted to a double.
-     * @param element a given string
-     * @return true if a given string can be converted to a double, otherwise return false
+     * Checking whether the given string can be converted to double.
+     * @param element the given string
+     * @return true if the given string can be converted to double, otherwise return false
      */
     protected boolean isDouble(String element) {
         try {
@@ -39,6 +46,12 @@ public abstract class VECLoad {
             return false;
         }
     }
+
+    /**
+     * Checking whether the given string is in Hex color format
+     * @param element the given string
+     * @return true if the given string is in Hex color format, otherwise return false
+     */
     protected boolean isHexColor(String element){
         try {
             Pattern hexcolorPattern = Pattern.compile("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
@@ -49,17 +62,14 @@ public abstract class VECLoad {
         }
     }
 
+    /**
+     * Checking whether the given string is in VEC command format
+     * @param element the given string
+     * @return true if the given string is in VEC command format, otherwise return false
+     */
     protected boolean isCommandString(String element) {
      return ((element != null)
              && (element.matches("^[A-Za-z]*$")));
-    }
-
-    protected boolean isOdd(int length) {
-        try {
-            return length % 2 != 0;
-        } catch (NumberFormatException e){
-            return false ;
-        }
     }
 
 }
