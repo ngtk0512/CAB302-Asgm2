@@ -12,6 +12,7 @@ public class Plot extends VECShape {
 
     @Override
     public void draw(Graphics2D drawboard) {
-        drawboard.fillRect(getX1(),getY1(),2,2);
+        drawboard.setColor(getpenColor());
+        drawboard.fillOval(getX1(),getY1(),5,5);
     }
 }

@@ -11,10 +11,10 @@ public class Rectangle extends VECShape {
 
     @Override
     public void draw(Graphics2D drawboard) {
+        drawboard.setColor(getpenColor());
         drawboard.drawLine(getX2(), getY2(), getX1(), getY2());
         drawboard.drawLine(getX1(), getY2(), getX1(), getY1());
         drawboard.drawLine(getX1(), getY1(), getX2(), getY1());
         drawboard.drawLine(getX2(), getY1(), getX2(), getY2());
-
     }
 }

@@ -24,7 +24,8 @@ public class GUI extends JFrame implements Runnable {
     final int WIDTH = 750;
     final int HEIGHT = 800;
 
-    private JButton clearBtn, undoBtn,plotBtn, lineBtn,rectBtn ;
+    private JButton clearBtn, undoBtn,plotBtn, lineBtn,rectBtn,ellipseBtn ;
+    private JRadioButton penclrBtn, fillclrBtn;
     private DrawBoard drawBoard;
     private JColorChooser colorPallete;
     private JMenuBar menuBar;
@@ -33,6 +34,7 @@ public class GUI extends JFrame implements Runnable {
 
 
     private Container content = this.getContentPane();
+
 
     /**
      * Initial Gui constructor
@@ -54,21 +56,13 @@ public class GUI extends JFrame implements Runnable {
         content.add(colorPallete,BorderLayout.SOUTH);
         content.add(toolBar,BorderLayout.WEST);
 
-
+//        pack();
         repaint();
-        this.setVisible(true);
+        setVisible(true);
     }
 
 
     public void run() {}
-
-    /**
-     * Set up the display of drawboard
-     */
-    public void setDrawBoard() {
-
-
-    }
 
     /**
      * Set up the color pallete layout
@@ -86,8 +80,20 @@ public class GUI extends JFrame implements Runnable {
         }
         // Disable the preview panel
         colorPallete.setPreviewPanel(new JPanel());
-
         colorPallete.getSelectionModel().addChangeListener(new ColorSelection());
+
+        colorPallete.setLayout(new FlowLayout());
+
+        ButtonGroup buttons = new ButtonGroup();
+        penclrBtn = new JRadioButton("Pen Color");
+        fillclrBtn = new JRadioButton("Fill Color");
+
+        buttons.add(penclrBtn);
+        buttons.add(fillclrBtn);
+        buttons.setSelected(penclrBtn.getModel(),true);
+
+        colorPallete.add(penclrBtn);
+        colorPallete.add(fillclrBtn);
     }
 
     /**
@@ -132,14 +138,15 @@ public class GUI extends JFrame implements Runnable {
         plotBtn = new JButton("Plot");
         lineBtn = new JButton("Line");
         rectBtn = new JButton("Rectangle");
+        ellipseBtn = new JButton("Ellipse");
 
-        ButtonHandler bh = new ButtonHandler();
 
-        addButtontoToolbar(toolBar,clearBtn,bh);
-        addButtontoToolbar(toolBar,undoBtn,bh);
-        addButtontoToolbar(toolBar,plotBtn,bh);
-        addButtontoToolbar(toolBar,lineBtn,bh);
-        addButtontoToolbar(toolBar,rectBtn,bh);
+        addButtontoToolbar(toolBar,clearBtn,new toolbarHandler());
+        addButtontoToolbar(toolBar,undoBtn,new toolbarHandler());
+        addButtontoToolbar(toolBar,plotBtn,new toolbarHandler());
+        addButtontoToolbar(toolBar,lineBtn,new toolbarHandler());
+        addButtontoToolbar(toolBar,rectBtn,new toolbarHandler());
+        addButtontoToolbar(toolBar,ellipseBtn, new toolbarHandler());
 
 
 
@@ -192,11 +199,13 @@ public class GUI extends JFrame implements Runnable {
                         e1.printStackTrace();
                     }
                 }
+            } else if (item == itemExit){
+
             }
         }
     }
 
-    private class ButtonHandler implements ActionListener{
+    private class toolbarHandler implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -210,7 +219,8 @@ public class GUI extends JFrame implements Runnable {
                 drawBoard.setCurrentShapeType(1);
             }else if(e.getSource()== rectBtn){
                 drawBoard.setCurrentShapeType(2);
-            }
+            }else if(e.getSource()==ellipseBtn)
+                drawBoard.setCurrentShapeType(3);
         }
     }
 
@@ -218,9 +228,13 @@ public class GUI extends JFrame implements Runnable {
 
         @Override
         public void stateChanged(ChangeEvent e) {
-            Color color = colorPallete.getColor();
-            drawBoard.pencolorChange(color);
-            drawBoard.getcurrentPenColor();
+            if(penclrBtn.getModel().isSelected()) {
+                Color color = colorPallete.getColor();
+                drawBoard.setcurrentPenColor(color);
+            } else {
+                Color color = colorPallete.getColor();
+                drawBoard.setcurrenFillColor(color);
+            }
         }
     }
 

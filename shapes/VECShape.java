@@ -23,8 +23,9 @@ public abstract class VECShape {
     {super(); }
 
     public VECShape(int x1, int y1, Color penColor) {
-        setX1(x1);
-        setY1(y1);
+        this.x1 =x1;
+        this.y1 =y1;
+        this.penColor = penColor;
     }
 
     public VECShape(int x1, int y1, int x2, int y2, Color penColor, Color fillColor){
@@ -65,7 +66,7 @@ public abstract class VECShape {
 
     public boolean getFilled() { return isFilled; }
 
-    public void setpenWidth(int penWidth){}
+    public void setpenWidth(int width){}
 
     public int getpenWidth(){return width;}
 
